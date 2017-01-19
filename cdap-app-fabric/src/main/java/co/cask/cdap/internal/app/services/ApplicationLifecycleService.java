@@ -73,6 +73,7 @@ import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.security.Action;
 import co.cask.cdap.proto.security.Principal;
 import co.cask.cdap.route.store.RouteStore;
+import co.cask.cdap.security.impersonation.Impersonator;
 import co.cask.cdap.security.spi.authentication.AuthenticationContext;
 import co.cask.cdap.security.spi.authorization.AuthorizationEnforcer;
 import co.cask.cdap.security.spi.authorization.PrivilegesManager;
@@ -652,7 +653,7 @@ ApplicationLifecycleService extends AbstractIdleService {
       // Remove all process states and group states for each stream
       final String namespace = String.format("%s.%s", flowProgramId.getApplicationId(), flowProgramId.getId());
 
-      impersonator.doAs(appId.getParent(), new Callable<Void>() {
+      impersonator.doAs(appId, new Callable<Void>() {
 
         // TODO: (CDAP-7326) since one worker or flow can only be ran by a single instance of APP, (also a single
         // version), should delete flow for each version
