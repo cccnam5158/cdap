@@ -38,6 +38,7 @@ import co.cask.cdap.logging.LoggingConfiguration;
 import co.cask.cdap.logging.context.FlowletLoggingContext;
 import co.cask.cdap.logging.filter.Filter;
 import co.cask.cdap.logging.guice.LoggingModules;
+import co.cask.cdap.logging.read.FileMetadataReader;
 import co.cask.cdap.logging.read.LogEvent;
 import co.cask.cdap.logging.write.FileMetaDataManager;
 import co.cask.cdap.logging.write.LogLocation;
@@ -120,6 +121,7 @@ public class CDAPLogAppenderTest {
       injector.getInstance(CConfiguration.class).getInt(LoggingConfiguration.LOG_FILE_SYNC_INTERVAL_BYTES,
                                                         2 * 1024 * 1024);
     FileMetaDataManager fileMetaDataManager = injector.getInstance(FileMetaDataManager.class);
+    FileMetadataReader fileMetadataReader = injector.getInstance(FileMetadataReader.class);
     CDAPLogAppender cdapLogAppender = new CDAPLogAppender();
     injector.injectMembers(cdapLogAppender);
     cdapLogAppender.setSyncIntervalBytes(syncInterval);
@@ -142,7 +144,8 @@ public class CDAPLogAppenderTest {
     cdapLogAppender.stop();
 
     try {
-      List<LogLocation> files = fileMetaDataManager.listFiles(cdapLogAppender.getLoggingPath(properties));
+      List<LogLocation> files = fileMetadataReader.listFiles(cdapLogAppender.getLoggingPath(properties),
+                                                             0, Long.MAX_VALUE);
       Assert.assertEquals(1, files.size());
       LogLocation logLocation = files.get(0);
       Assert.assertEquals(LogLocation.VERSION_1, logLocation.getFrameworkVersion());
@@ -175,6 +178,7 @@ public class CDAPLogAppenderTest {
       injector.getInstance(CConfiguration.class).getInt(LoggingConfiguration.LOG_FILE_SYNC_INTERVAL_BYTES,
                                                         2 * 1024 * 1024);
     FileMetaDataManager fileMetaDataManager = injector.getInstance(FileMetaDataManager.class);
+    FileMetadataReader fileMetadataReader = injector.getInstance(FileMetadataReader.class);
     CDAPLogAppender cdapLogAppender = new CDAPLogAppender();
     injector.injectMembers(cdapLogAppender);
     cdapLogAppender.setSyncIntervalBytes(syncInterval);
@@ -208,7 +212,8 @@ public class CDAPLogAppenderTest {
     cdapLogAppender.stop();
 
     try {
-      List<LogLocation> files = fileMetaDataManager.listFiles(cdapLogAppender.getLoggingPath(properties));
+      List<LogLocation> files = fileMetadataReader.listFiles(cdapLogAppender.getLoggingPath(properties),
+                                                             0, Long.MAX_VALUE);
       Assert.assertEquals(2, files.size());
       assertLogEventDetails(event1, files.get(0));
       assertLogEventDetails(event2, files.get(1));
