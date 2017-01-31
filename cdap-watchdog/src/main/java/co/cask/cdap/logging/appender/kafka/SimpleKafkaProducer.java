@@ -10,7 +10,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * License for the specific language governing permissions and limitations unde
  * the License.
  */
 
@@ -51,8 +51,8 @@ public final class SimpleKafkaProducer {
     props.setProperty("request.required.acks", "1");
     props.setProperty("producer.type", cConf.get(LoggingConfiguration.KAFKA_PRODUCER_TYPE,
                        LoggingConfiguration.DEFAULT_KAFKA_PRODUCER_TYPE));
-    props.setProperty("queue.buffering.max.ms", cConf.get(LoggingConfiguration.KAFKA_PROCUDER_BUFFER_MS,
-                      Long.toString(LoggingConfiguration.DEFAULT_KAFKA_PROCUDER_BUFFER_MS)));
+    props.setProperty("queue.buffering.max.ms", cConf.get(LoggingConfiguration.KAFKA_PRODUCER_BUFFER_MS,
+                      Long.toString(LoggingConfiguration.DEFAULT_KAFKA_PRODUCER_BUFFER_MS)));
     props.setProperty(Constants.Logging.NUM_PARTITIONS, cConf.get(Constants.Logging.NUM_PARTITIONS));
 
     ProducerConfig config = new ProducerConfig(props);
