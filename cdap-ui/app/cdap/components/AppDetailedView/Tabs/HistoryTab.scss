@@ -17,16 +17,15 @@
 @import '../../../styles/variables.scss';
 
 .history-tab {
-  padding: 20px;
+  padding: 10px 20px;
+  height: calc(100% - 40px);
+  overflow-y: auto;
+
   &.table-bordered {
     width: calc(100% - 20px);
     margin: 10px;
   }
 
-  .empty-message {
-    margin-top: 15%;
-    color: gray;
-  }
   table {
     tr th,
     tr td {

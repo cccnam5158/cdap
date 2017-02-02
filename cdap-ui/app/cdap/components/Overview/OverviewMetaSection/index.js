@@ -109,6 +109,7 @@ export default class OverviewMetaSection extends Component {
                 null
             }
             <small>
+              Deployed
               {
                 creationTime ?
                   <TimeAgo date={parseInt(creationTime, 10)} />

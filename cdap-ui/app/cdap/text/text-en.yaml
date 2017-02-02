@@ -83,7 +83,7 @@ features:
   AppDetailedView:
     Title: Application - {appId}
     History:
-      emptyMessage: No Runs
+      emptyMessage: No Runs found.
   ConfirmationModal:
     confirmDefaultText: OK
     cancelDefaultText: Cancel
@@ -380,10 +380,10 @@ features:
   Overview:
     ProgramTab:
       emptyMessage: No Programs found.
-      title: "Programs in {appId}:"
+      title: "Programs in \"{appId}\""
       runningProgramLabel: "Number of programs running: {programCount}"
     DatasetTab:
-      title: "Dataset Used by {appId}:"
+      title: "Dataset Used by \"{appId}\""
     SchemaTab:
       emptyMessage: No Schema found.
       title: Schema of each record in the {entityType} "{entityId}"
