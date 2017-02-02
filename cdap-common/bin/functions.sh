@@ -190,12 +190,12 @@ cdap_stop_pidfile() {
         echo -n .
         sleep 1
       done
+      rm -f ${__pidfile}
       echo
       __ret=0
     else
       __ret=${?}
     fi
-    rm -f ${__pidfile}
     echo
   fi
   return ${__ret}
@@ -207,13 +207,7 @@ cdap_stop_pidfile() {
 #
 cdap_check_pidfile() {
   local readonly __pidfile=${1} __label=${2:-Process}
-  if [[ -f ${__pidfile} ]]; then
-    local readonly __pid=$(<${__pidfile})
-    if [[ $(cdap_status_pidfile ${__pidfile} ${__label} >/dev/null) ]]; then
-      echo "${__label} running as PID ${__pid}. Stop it first."
-      return 1
-    fi
-  fi
+  cdap_status_pidfile ${__pidfile} ${__label} && return 1
   return 0
 }
 
@@ -835,14 +829,8 @@ cdap_sdk_start() {
   fi
 
   eval split_jvm_opts ${CDAP_SDK_DEFAULT_JVM_OPTS} ${CDAP_SDK_OPTS} ${JAVA_OPTS}
-  if [[ -f ${__pidfile} ]]; then
-    __pid=$(<${__pidfile})
-    if kill -0 ${__pid} >/dev/null 2>&1; then
-      echo "Standalone process with process id ${__pid} is already running."
-      return 0
-    fi
-  fi
 
+  cdap_sdk_check_before_start || return 1
   cdap_create_local_dir || die "Failed to create LOCAL_DIR: ${LOCAL_DIR}"
   cdap_create_log_dir || die "Failed to create LOG_DIR: ${LOG_DIR}"
   cdap_create_pid_dir || die "Failed to create PID_DIR: ${PID_DIR}"
