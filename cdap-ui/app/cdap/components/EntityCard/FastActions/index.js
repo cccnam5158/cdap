@@ -57,7 +57,7 @@ export default class FastActions extends Component {
     }
 
     if (this.props.onUpdate) {
-      this.props.onUpdate();
+      this.props.onUpdate(action);
     }
   }
 
