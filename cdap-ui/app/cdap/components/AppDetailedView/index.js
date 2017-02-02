@@ -30,6 +30,8 @@ import {parseMetadata} from 'services/metadata-parser';
 import AppDetailedViewTab from 'components/AppDetailedView/Tabs';
 import shortid from 'shortid';
 import Redirect from 'react-router/Redirect';
+import FastActionToMessage from 'services/fast-action-message-helper';
+import capitalize from 'lodash/capitalize';
 require('./AppDetailedView.scss');
 
 export default class AppDetailedView extends Component {
@@ -41,7 +43,8 @@ export default class AppDetailedView extends Component {
         datasets: [],
         streams: [],
         routeToHome: false,
-        selectedNamespace: null
+        selectedNamespace: null,
+        successMessage: null
       },
       loading: true,
       entityMetadata: objectQuery(this.props, 'location', 'state', 'entityMetadata') || {},
@@ -134,6 +137,15 @@ export default class AppDetailedView extends Component {
         routeToHome: true
       });
     }
+    let successMessage;
+    if (action === 'setPreferences') {
+      successMessage = FastActionToMessage(action, {entityType: capitalize(this.state.entityMetadata.type)});
+    } else {
+      successMessage = FastActionToMessage(action);
+    }
+    this.setState({
+      successMessage
+    });
   }
   render() {
     let title = this.state.entityDetail.isHydrator ?
@@ -153,10 +165,12 @@ export default class AppDetailedView extends Component {
         <OverviewHeader
           icon="icon-fist"
           title={title}
+          successMessage={this.state.successMessage}
         />
         <OverviewMetaSection
           entity={this.state.entityMetadata}
           onFastActionSuccess={this.goToHome.bind(this)}
+          onFastActionUpdate={this.goToHome.bind(this)}
         />
         <AppDetailedViewTab
           params={this.props.params}
