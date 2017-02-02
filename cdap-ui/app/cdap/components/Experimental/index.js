@@ -35,7 +35,9 @@ export default class Experimental extends Component {
       length: 0,
       schemaModal: false,
       showAlert: false,
-      errorMessage: ''
+      errorMessage: '',
+      successMessage: '',
+      successAlert: false
     };
 
     this.createWorkspace = this.createWorkspace.bind(this);
@@ -46,6 +48,7 @@ export default class Experimental extends Component {
     this.getSchema = this.getSchema.bind(this);
     this.toggleSchemaModal = this.toggleSchemaModal.bind(this);
     this.dismissAlert = this.dismissAlert.bind(this);
+    this.dismissSuccess = this.dismissSuccess.bind(this);
   }
 
   createWorkspace() {
@@ -64,6 +67,8 @@ export default class Experimental extends Component {
       workspaceId
     }).subscribe((res) => {
       console.log(res);
+      this.showSuccess(res.message);
+
     }, (err) => {
       console.log(err);
       this.setState({
@@ -71,6 +76,17 @@ export default class Experimental extends Component {
         showAlert: true
       });
     });
+  }
+
+  showSuccess(message) {
+    this.setState({
+      successAlert: true,
+      successMessage: message
+    });
+
+    setTimeout(() => {
+      this.setState({successAlert: false});
+    }, 3000);
   }
 
   deleteWorkspace() {
@@ -88,6 +104,7 @@ export default class Experimental extends Component {
       workspaceId
     }).subscribe((res) => {
       console.log(res);
+      this.showSuccess(res.message);
     }, (err) => {
       console.log(err);
       this.setState({
@@ -129,6 +146,8 @@ export default class Experimental extends Component {
     UploadFile({url, fileContents: this.state.file, headers})
       .subscribe((res) => {
         console.log(res);
+        this.showSuccess(`Success uploading file to workspace ${this.workspaceId.value}`);
+        this.execute();
       }, (err) => {
         console.log(err);
         this.setState({
@@ -263,6 +282,10 @@ export default class Experimental extends Component {
     this.setState({showAlert: false});
   }
 
+  dismissSuccess() {
+    this.setState({successAlert: false});
+  }
+
   renderAlert() {
     if (!this.state.showAlert) { return null; }
 
@@ -279,6 +302,22 @@ export default class Experimental extends Component {
     );
   }
 
+  renderSuccessAlert() {
+    if (!this.state.successAlert) { return null; }
+
+    return (
+      <div className="alert alert-success" role="alert">
+        <span>{this.state.successMessage}</span>
+        <span
+          className="float-xs-right"
+          onClick={this.dismissSuccess}
+        >
+          <i className="fa fa-times"></i>
+        </span>
+      </div>
+    );
+  }
+
   render() {
     let headers;
     if (this.state.length !== 0) {
@@ -287,6 +326,7 @@ export default class Experimental extends Component {
 
     return (
       <div className="experimental-container">
+        {this.renderSuccessAlert()}
         {this.renderAlert()}
         <div className="row">
           <div className="col-xs-3 left-panel">
