@@ -106,7 +106,7 @@ export default class StreamOverview extends Component {
     }
   }
 
-  onFastActionsUpdate(action) {
+  onFastActionSuccess(action) {
     this.props.onCloseAndRefresh(action);
   }
 
@@ -134,7 +134,7 @@ export default class StreamOverview extends Component {
         />
         <OverviewMetaSection
           entity={this.state.entity}
-          onFastActionsUpdate={this.onFastActionsUpdate.bind(this)}
+          onFastActionSuccess={this.onFastActionSuccess.bind(this)}
         />
         <StreamOverviewTab entity={this.state.entityDetail} />
       </div>
