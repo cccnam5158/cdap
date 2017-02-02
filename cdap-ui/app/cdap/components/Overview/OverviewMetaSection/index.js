@@ -114,7 +114,7 @@ export default class OverviewMetaSection extends Component {
           <FastActions
             className="overview-fast-actions"
             entity={this.props.entity}
-            onUpdate={this.onFastActionsUpdate.bind(this)}
+            onSuccess={this.onFastActionsUpdate.bind(this)}
           />
         </div>
         <Description description={description} />
