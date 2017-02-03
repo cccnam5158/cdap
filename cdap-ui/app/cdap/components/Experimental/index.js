@@ -367,16 +367,17 @@ export default class Experimental extends Component {
 
               <div className="text-xs-right">
                 <button
-                  className="btn btn-primary"
-                  onClick={this.createWorkspace}
-                >
-                  Create
-                </button>
-                <button
                   className="btn btn-danger"
                   onClick={this.deleteWorkspace}
                 >
                   Delete
+                </button>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={this.createWorkspace}
+                >
+                  Create
                 </button>
               </div>
 
