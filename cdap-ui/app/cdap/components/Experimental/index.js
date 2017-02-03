@@ -188,7 +188,7 @@ export default class Experimental extends Component {
     }, (err) => {
       console.log(err);
       this.setState({
-        errorMessage: err.message,
+        errorMessage: err.message || err.response.message,
         showAlert: true
       });
     });
@@ -235,7 +235,7 @@ export default class Experimental extends Component {
     }, (err) => {
       console.log(err);
       this.setState({
-        errorMessage: err.message,
+        errorMessage: err.message || err.response.message,
         showAlert: true
       });
     });
@@ -329,7 +329,35 @@ export default class Experimental extends Component {
         {this.renderSuccessAlert()}
         {this.renderAlert()}
         <div className="row">
-          <div className="col-xs-3 left-panel">
+          <div className="col-xs-9 left-panel">
+            {this.state.length === 0 ?
+              (<h3 className="text-xs-center no-data">No data</h3>)
+                : (
+              <table className="table table-bordered table-striped">
+                <thead className="thead-inverse">
+                  {
+                    headers.map((head) => {
+                      return <th key={head}>{head}</th>;
+                    })
+                  }
+                </thead>
+                <tbody>
+                  {
+                    this.state.data.map((row) => {
+                      return (
+                        <tr key={shortid.generate()}>
+                          {headers.map((head) => {
+                            return <td key={shortid.generate()}>{row[head]}</td>;
+                          })}
+                        </tr>
+                      );
+                    })
+                  }
+                </tbody>
+              </table>
+            )}
+          </div>
+          <div className="col-xs-3 right-panel">
             <div className="directives-container">
               <div>
                 <h4>Directives</h4>
@@ -399,34 +427,6 @@ export default class Experimental extends Component {
               </div>
 
             </div>
-          </div>
-          <div className="col-xs-9 right-panel">
-            {this.state.length === 0 ?
-              (<h3 className="text-xs-center no-data">No data</h3>)
-                : (
-              <table className="table table-bordered table-striped">
-                <thead className="thead-inverse">
-                  {
-                    headers.map((head) => {
-                      return <th key={head}>{head}</th>;
-                    })
-                  }
-                </thead>
-                <tbody>
-                  {
-                    this.state.data.map((row) => {
-                      return (
-                        <tr key={shortid.generate()}>
-                          {headers.map((head) => {
-                            return <td key={shortid.generate()}>{row[head]}</td>;
-                          })}
-                        </tr>
-                      );
-                    })
-                  }
-                </tbody>
-              </table>
-            )}
           </div>
         </div>
 

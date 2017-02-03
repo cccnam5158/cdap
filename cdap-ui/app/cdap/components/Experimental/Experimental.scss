@@ -32,8 +32,8 @@ $border: 2px solid #cccccc;
   .row {
     height: calc(100vh - 50px);
 
-    .left-panel {
-      border-right: $border;
+    .right-panel {
+      border-left: $border;
       height: 100%;
       position: relative;
 
@@ -68,7 +68,7 @@ $border: 2px solid #cccccc;
       }
     }
 
-    .right-panel {
+    .left-panel {
       padding-left: 0;
       padding-right: 0;
       overflow: auto;
