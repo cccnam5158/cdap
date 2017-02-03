@@ -186,7 +186,6 @@ export default class Experimental extends Component {
         length: res.item
       });
     }, (err) => {
-      console.log(err);
       this.setState({
         errorMessage: err.message || err.response.message,
         showAlert: true
@@ -233,7 +232,6 @@ export default class Experimental extends Component {
 
       this.toggleSchemaModal();
     }, (err) => {
-      console.log(err);
       this.setState({
         errorMessage: err.message || err.response.message,
         showAlert: true
@@ -361,6 +359,7 @@ export default class Experimental extends Component {
             <div className="directives-container">
               <div>
                 <h4>Directives</h4>
+                <h6>Specify directive to wrangle data. For more information visit <a href="http://github.com/hydrator/wrangler-transform">here</a></h6>
                 <textarea
                   className="form-control"
                   ref={(ref) => { this.textareaRef = ref; }}
@@ -385,6 +384,7 @@ export default class Experimental extends Component {
             </div>
             <div className="workspace-container">
               <h4>Workspace</h4>
+              <h6>Create workspace before starting to wrangle</h6>
               <div>
                 <input
                   type="text"
@@ -409,6 +409,7 @@ export default class Experimental extends Component {
                 </button>
               </div>
 
+              <h6>Select the file to be uploaded to workspace </h6>
               <div className="file-input">
                 <input
                   type="file"
