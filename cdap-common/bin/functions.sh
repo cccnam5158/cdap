@@ -903,10 +903,10 @@ cdap_sdk_start() {
       fi
     done
     echo
-    echo ${__pid} > ${__pidfile}
     if ! kill -0 ${__pid} >/dev/null 2>&1; then
       die "Failed to start, please check logs at ${LOG_DIR} for more information"
     fi
+    echo ${__pid} > ${__pidfile}
   fi
   return ${__ret}
 }
