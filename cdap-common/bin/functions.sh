@@ -202,13 +202,20 @@ cdap_stop_pidfile() {
 }
 
 #
-# cdap_check_pidfile <pidfile>
-# returns: 1 if running, 0 otherwise
+# cdap_check_pidfile <pidfile> [label]
+# returns: 1 on error, 0 otherwise
 #
 cdap_check_pidfile() {
   local readonly __pidfile=${1} __label=${2:-Process}
-  cdap_status_pidfile ${__pidfile} ${__label} && return 1
-  return 0
+  local readonly __ret
+  cdap_status_pidfile ${__pidfile} ${__label}
+  __ret=$?
+  case ${__ret} in
+    3) echo "Please delete ${__pidfile} and try again" ;;
+    0) echo "Please stop ${__label}, first" ;;
+    *) return 0 ;;
+  esac
+  return 1
 }
 
 ###
@@ -589,7 +596,7 @@ cdap_start_bin() {
   local readonly __svc=${CDAP_SERVICE/-server/}
   local readonly __ret __pid
   local readonly __name=$(if [[ ${__svc} == ui ]]; then echo UI ; else echo ${__svc/-/ } | awk '{for(i=1;i<=NF;i++){ $i=toupper(substr($i,1,1)) substr($i,2) }}1' ; fi)
-  cdap_check_pidfile ${__pidfile} || exit 0 # Error output is done in function
+  cdap_check_pidfile ${__pidfile} ${__name} || exit 0 # Error output is done in function
   cdap_create_pid_dir || die "Could not create PID dir: ${PID_DIR}"
   logecho "$(date) Starting CDAP ${__name} service on ${HOSTNAME}"
   ulimit -a >>${__logfile} 2>&1
@@ -609,7 +616,7 @@ cdap_start_bin() {
 #
 cdap_start_java() {
   local readonly __name=$(echo ${CDAP_SERVICE/-/ } | awk '{for(i=1;i<=NF;i++){ $i=toupper(substr($i,1,1)) substr($i,2) }}1')
-  cdap_check_pidfile ${__pidfile} || exit 0 # Error output is done in function
+  cdap_check_pidfile ${__pidfile} ${__name} || exit 0 # Error output is done in function
   cdap_create_pid_dir || die "Could not create PID dir: ${PID_DIR}"
   # Check and set classpath if in development environment.
   cdap_check_and_set_classpath_for_dev_environment "${CDAP_HOME}"
@@ -800,7 +807,7 @@ cdap_sdk_stop() { cdap_stop_pidfile ${__pidfile} "CDAP Standalone (SDK)"; };
 # cdap_sdk_check_before_start
 #
 cdap_sdk_check_before_start() {
-  cdap_check_pidfile ${__pidfile} || return ${?}
+  cdap_check_pidfile ${__pidfile} Standalone || return ${?}
   cdap_check_node_version ${CDAP_NODE_VERSION_MINIMUM:-v4.5.0} || return ${?}
   local __node_pid=$(ps | grep ${CDAP_UI_PATH:-ui/server.js} | grep -v grep | awk '{ print $1 }')
   if [[ -z ${__node_pid} ]]; then
