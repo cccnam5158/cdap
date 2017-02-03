@@ -45,7 +45,7 @@ $border: 2px solid #cccccc;
         right: 10px;
       }
 
-      .btn { margin-left: 5px; }
+      .btn { margin-left: 10px; }
 
       .directives-container {
         top: 0;
@@ -58,10 +58,9 @@ $border: 2px solid #cccccc;
       }
 
       .workspace-container {
-        border-top: $border;
         height: 300px;
         bottom: 0;
-        padding-top: 10px;
+        padding-top: 20px;
 
         > div { margin-bottom: 5px; }
         .file-input { margin-top: 10px; }
@@ -74,7 +73,7 @@ $border: 2px solid #cccccc;
       overflow: auto;
       height: calc(100% - 54px);
 
-      .no-data { margin-top: 25px; }
+      .no-data { margin-top: 15px; }
 
       .table {
         margin-bottom: 0;
