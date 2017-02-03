@@ -17,10 +17,10 @@
 package co.cask.cdap.logging.appender.kafka;
 
 import co.cask.cdap.common.conf.CConfiguration;
+import co.cask.cdap.common.conf.Constants;
 import co.cask.cdap.common.logging.ApplicationLoggingContext;
 import co.cask.cdap.common.logging.LoggingContext;
 import co.cask.cdap.common.logging.NamespaceLoggingContext;
-import co.cask.cdap.logging.LoggingConfiguration;
 import co.cask.cdap.logging.appender.LogAppender;
 import co.cask.cdap.logging.appender.LogMessage;
 import co.cask.cdap.proto.id.NamespaceId;
@@ -37,7 +37,6 @@ public final class KafkaLogAppender extends LogAppender {
   private static final Logger LOG = LoggerFactory.getLogger(KafkaLogAppender.class);
 
   private static final String APPENDER_NAME = "KafkaLogAppender";
-  private static final String KAFKA_PARTITION_KEY_PROGRAM = "program";
 
   private final SimpleKafkaProducer producer;
   private final LoggingEventSerializer loggingEventSerializer;
@@ -71,7 +70,7 @@ public final class KafkaLogAppender extends LogAppender {
   private String getPartitionKey(LoggingContext loggingContext) {
     String namespaceId = loggingContext.getSystemTagsMap().get(NamespaceLoggingContext.TAG_NAMESPACE_ID).getValue();
 
-    if (cConf.get(LoggingConfiguration.KAFKA_PARTITION_KEY).equals(KAFKA_PARTITION_KEY_PROGRAM) ||
+    if (cConf.get(Constants.Logging.LOG_PUBLISH_PARTITION_KEY).equals(PartitionType.PROGRAM.getType()) ||
       namespaceId.equals(NamespaceId.SYSTEM.getEntityName())) {
       return loggingContext.getLogPartition();
     }
@@ -89,5 +88,20 @@ public final class KafkaLogAppender extends LogAppender {
 
     super.stop();
     producer.stop();
+  }
+
+  private enum PartitionType {
+    PROGRAM("program"),
+    APPLICATION("application");
+
+    private final String type;
+
+    PartitionType(String type) {
+      this.type = type;
+    }
+
+    public String getType() {
+      return type;
+    }
   }
 }

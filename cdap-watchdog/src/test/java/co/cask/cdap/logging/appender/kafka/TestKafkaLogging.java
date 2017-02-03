@@ -22,7 +22,6 @@ import co.cask.cdap.common.conf.Constants;
 import co.cask.cdap.common.logging.LoggingContext;
 import co.cask.cdap.common.logging.LoggingContextAccessor;
 import co.cask.cdap.logging.KafkaTestBase;
-import co.cask.cdap.logging.LoggingConfiguration;
 import co.cask.cdap.logging.appender.LogAppender;
 import co.cask.cdap.logging.appender.LogAppenderInitializer;
 import co.cask.cdap.logging.appender.LoggingTester;
@@ -107,7 +106,7 @@ public class TestKafkaLogging extends KafkaTestBase {
   public void testPartitionKey() throws Exception {
     CConfiguration cConf = KAFKA_TESTER.getCConf();
     // set kafka partition key to application
-    cConf.set(LoggingConfiguration.KAFKA_PARTITION_KEY, "application");
+    cConf.set(Constants.Logging.LOG_PUBLISH_PARTITION_KEY, "application");
 
     Logger logger = LoggerFactory.getLogger("TestKafkaLogging");
     LoggingContext loggingContext = new FlowletLoggingContext("TKL_NS_2", "APP_2", "FLOW_2", "FLOWLET_2",
@@ -155,7 +154,7 @@ public class TestKafkaLogging extends KafkaTestBase {
     }
 
     // reset kafka partition key
-    cConf.set(LoggingConfiguration.KAFKA_PARTITION_KEY, "program");
+    cConf.set(Constants.Logging.LOG_PUBLISH_PARTITION_KEY, "program");
   }
 
   private Map.Entry<Integer, String> convertFetchedMessage(FetchedMessage message) throws IOException {
