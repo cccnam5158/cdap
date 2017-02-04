@@ -79,8 +79,6 @@ public class MetricsProcessorServiceTest extends MetricsProcessorServiceTestBase
 
   private InMemoryZKServer zkServer;
 
-  // TODO  CDAP-8336 flaky test due to test design, remove after improving the test.
-  @Ignore
   @Test
   public void testMetricsProcessor() throws Exception {
     injector.getInstance(TransactionManager.class).startAndWait();
