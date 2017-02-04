@@ -391,6 +391,9 @@ features:
     Metadata:
       ttl: "Time To Live (TTL): "
       type: "Type: "
+    deployedLabel:
+      data: Created
+      app: Deployed
   Pagination:
     dropdown-label: Page
   Resource-Center:

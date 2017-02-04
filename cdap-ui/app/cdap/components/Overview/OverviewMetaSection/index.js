@@ -109,7 +109,12 @@ export default class OverviewMetaSection extends Component {
                 null
             }
             <small>
-              Deployed
+              {
+                ['datasetinstance', 'stream'].indexOf(this.props.entity.type) !== -1 ?
+                  T.translate('features.Overview.deployedLabel.data')
+                :
+                  T.translate('features.Overview.deployedLabel.app')
+              }
               {
                 creationTime ?
                   <TimeAgo date={parseInt(creationTime, 10)} />
