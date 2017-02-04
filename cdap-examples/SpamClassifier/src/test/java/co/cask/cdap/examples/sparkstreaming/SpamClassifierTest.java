@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Cask Data, Inc.
+ * Copyright © 2016-2017 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -140,15 +140,27 @@ public class SpamClassifierTest extends TestBase {
       expected.equalsIgnoreCase(response.getResponseBodyAsString()));
   }
 
-  private void publishKafkaMessages() {
+  private void publishKafkaMessages() throws InterruptedException, ExecutionException, TimeoutException {
     KafkaPublisher publisher = kafkaClient.getPublisher(KafkaPublisher.Ack.ALL_RECEIVED, Compression.NONE);
-    KafkaPublisher.Preparer preparer = publisher.prepare(KAFKA_TOPIC);
-
-    preparer.add(Charsets.UTF_8.encode("1:REMINDER FROM O2: To get 2.50 pounds free call credit and details of great " +
-                                         "offers pls reply 2 this text with your valid name, house no and postcode"),
-                 "1"); // spam
-    preparer.add(Charsets.UTF_8.encode("2:I will call you later"), "2"); // ham
-    preparer.send();
+    final KafkaPublisher.Preparer preparer = publisher.prepare(KAFKA_TOPIC);
+    // Wait for messages to be successfully published to Kafka. Retry if publishing fails.
+    Tasks.waitFor(true, new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        // spam
+        preparer.add(
+          Charsets.UTF_8.encode("1:REMINDER FROM O2: To get 2.50 pounds free call credit and details of great " +
+                                  "offers pls reply 2 this text with your valid name, house no and postcode"), "1");
+        preparer.add(Charsets.UTF_8.encode("2:I will call you later"), "2"); // ham
+        int publishedMetricsCount = 0;
+        try {
+          publishedMetricsCount = preparer.send().get(5, TimeUnit.SECONDS);
+        } catch (Exception e) {
+          LOG.error("Exception occurs when sending messages to Kafka", e);
+        }
+        return publishedMetricsCount == 2;
+      }
+    }, 15, TimeUnit.SECONDS, "Failed to publish correct number of messages to Kafka");
   }
 
   private void ingestTrainingData() throws IOException {
