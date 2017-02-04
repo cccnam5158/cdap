@@ -90,7 +90,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ExternalResource;
@@ -880,7 +879,6 @@ public class AuthorizationTest extends TestBase {
   }
 
   @Test
-  @Ignore
   public void testCrossNSMapReduce() throws Exception {
     createAuthNamespace();
     ApplicationManager appManager = deployApplication(AUTH_NAMESPACE, DatasetCrossNSAccessWithMAPApp.class);
@@ -999,7 +997,6 @@ public class AuthorizationTest extends TestBase {
   }
 
   @Test
-  @Ignore
   public void testCrossNSSpark() throws Exception {
     createAuthNamespace();
 
@@ -1330,7 +1327,6 @@ public class AuthorizationTest extends TestBase {
     Map<String, String> programArgs, final ProgramManager<T> programManager)
     throws TimeoutException, InterruptedException, ExecutionException {
     programManager.start(programArgs);
-    programManager.waitForFinish(5, TimeUnit.MINUTES);
 
     Tasks.waitFor(true, new Callable<Boolean>() {
       @Override
@@ -1344,7 +1340,7 @@ public class AuthorizationTest extends TestBase {
         }
         return true;
       }
-    }, 120, TimeUnit.SECONDS, "Not all program runs have failed status. Expected all run status to be failed");
+    }, 5, TimeUnit.MINUTES, "Not all program runs have failed status. Expected all run status to be failed");
   }
 
 

@@ -604,22 +604,22 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
 
     // Execute Workflow without keeping the local datasets after run
     Map<String, String> additionalParams = new HashMap<>();
-    String runId = executeWorkflow(applicationManager, additionalParams);
+    String runId = executeWorkflow(applicationManager, additionalParams, 1);
     verifyWorkflowRun(runId, false, false, "COMPLETED");
 
     additionalParams.put("dataset.wordcount.keep.local", "true");
-    runId = executeWorkflow(applicationManager, additionalParams);
+    runId = executeWorkflow(applicationManager, additionalParams, 2);
     verifyWorkflowRun(runId, true, false, "COMPLETED");
 
     additionalParams.clear();
     additionalParams.put("dataset.*.keep.local", "true");
-    runId = executeWorkflow(applicationManager, additionalParams);
+    runId = executeWorkflow(applicationManager, additionalParams, 3);
     verifyWorkflowRun(runId, true, true, "COMPLETED");
 
     additionalParams.clear();
     additionalParams.put("dataset.*.keep.local", "true");
     additionalParams.put("destroy.throw.exception", "true");
-    runId = executeWorkflow(applicationManager, additionalParams);
+    runId = executeWorkflow(applicationManager, additionalParams, 4);
     verifyWorkflowRun(runId, true, true, "STARTED");
 
     WorkflowManager wfManager = applicationManager.getWorkflowManager(WorkflowAppWithLocalDatasets.WORKFLOW_NAME);
@@ -683,8 +683,8 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
     Assert.assertEquals(expectedRunStatus, Bytes.toString(workflowRuns.get().read(runId)));
   }
 
-  private String executeWorkflow(ApplicationManager applicationManager, Map<String, String> additionalParams)
-    throws Exception {
+  private String executeWorkflow(ApplicationManager applicationManager, Map<String, String> additionalParams,
+                                 int expectedComplete) throws Exception {
     WorkflowManager wfManager = applicationManager.getWorkflowManager(WorkflowAppWithLocalDatasets.WORKFLOW_NAME);
     Map<String, String> runtimeArgs = new HashMap<>();
     File waitFile = new File(TMP_FOLDER.newFolder(), "/wait.file");
@@ -731,7 +731,7 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
     doneFile.createNewFile();
 
     // Wait for workflow to finish
-    wfManager.waitForFinish(1, TimeUnit.MINUTES);
+    wfManager.waitForRuns(ProgramRunStatus.COMPLETED, expectedComplete, 1, TimeUnit.MINUTES);
     Map<String, WorkflowNodeStateDetail> nodeStateDetailMap = wfManager.getWorkflowNodeStates(runId);
     Map<String, String> workflowMetricsContext = new HashMap<>();
     workflowMetricsContext.put(Constants.Metrics.Tag.NAMESPACE, testSpace.getNamespace());
@@ -777,9 +777,15 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
                             nodeStateDetailMap.get("WordCount").getRunId());
     Assert.assertEquals(7, getMetricsManager().getTotalMetric(mrMetricsContext, "user.num.words"));
 
-    Map<String, String> readerContext = new HashMap<>(workflowMetricsContext);
+    final Map<String, String> readerContext = new HashMap<>(workflowMetricsContext);
     readerContext.put(Constants.Metrics.Tag.NODE, "readerAction");
-    Assert.assertEquals(6, getMetricsManager().getTotalMetric(readerContext, "user.unique.words"));
+
+    Tasks.waitFor(6L, new Callable<Long>() {
+      @Override
+      public Long call() throws Exception {
+        return getMetricsManager().getTotalMetric(readerContext, "user.unique.words");
+      }
+    }, 60, TimeUnit.SECONDS);
     return runId;
   }
 
