@@ -32,6 +32,7 @@ export default class Experimental extends Component {
     this.state = {
       file: null,
       data: null,
+      header: null,
       length: 0,
       schemaModal: false,
       showAlert: false,
@@ -184,6 +185,7 @@ export default class Experimental extends Component {
     .subscribe((res) => {
       this.setState({
         data: res.value,
+        header: res.header,
         length: res.item
       });
     }, (err) => {
@@ -320,7 +322,7 @@ export default class Experimental extends Component {
   render() {
     let headers;
     if (this.state.length !== 0) {
-      headers = Object.keys(this.state.data[0]);
+      headers = this.state.header;
     }
 
     return (
