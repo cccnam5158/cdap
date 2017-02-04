@@ -330,7 +330,7 @@ export default class Experimental extends Component {
         <div className="row">
           <div className="col-xs-9 left-panel">
             {this.state.length === 0 ?
-              (<h3 className="text-xs-center no-data">No data</h3>)
+              (<h3 className="text-xs-center no-data">Create workspace and upload data.</h3>)
                 : (
               <table className="table table-bordered table-striped">
                 <thead className="thead-inverse">
@@ -357,32 +357,6 @@ export default class Experimental extends Component {
             )}
           </div>
           <div className="col-xs-3 right-panel">
-            <div className="directives-container">
-              <div>
-                <h4>Directives</h4>
-                <h6>Specify directive to wrangle data. For more information visit <a href="http://github.com/hydrator/wrangler-transform">here</a></h6>
-                <textarea
-                  className="form-control"
-                  ref={(ref) => { this.textareaRef = ref; }}
-                ></textarea>
-              </div>
-
-              <div className="text-xs-right">
-                <button
-                  className="btn btn-secondary"
-                  onClick={this.getSchema}
-                >
-                  Schema
-                </button>
-
-                <button
-                  className="btn btn-primary"
-                  onClick={this.execute}
-                >
-                  Apply
-                </button>
-              </div>
-            </div>
             <div className="workspace-container">
               <h4>Workspace</h4>
               <h6>Create workspace before starting to wrangle</h6>
@@ -428,6 +402,32 @@ export default class Experimental extends Component {
                 </button>
               </div>
 
+            </div>
+            <div className="directives-container">
+              <div>
+                <h4>Directives</h4>
+                <h6>Specify directive to wrangle data. For more information visit <a href="http://github.com/hydrator/wrangler-transform">here</a></h6>
+                <textarea
+                  className="form-control"
+                  ref={(ref) => { this.textareaRef = ref; }}
+                >Type in directives here ...</textarea>
+              </div>
+
+              <div className="text-xs-right">
+                <button
+                  className="btn btn-secondary"
+                  onClick={this.getSchema}
+                >
+                  Schema
+                </button>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={this.execute}
+                >
+                  Apply
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -45,12 +45,12 @@ $border: 2px solid #cccccc;
         right: 10px;
       }
 
-      .btn { margin-left: 10px; }
+      .btn { margin-left: 5px; }
 
       .directives-container {
         top: 0;
         textarea {
-          min-height: 300px;
+          min-height: 200px;
           max-width: 100%;
           min-width: 100%;
           margin-bottom: 5px;
@@ -58,7 +58,7 @@ $border: 2px solid #cccccc;
       }
 
       .workspace-container {
-        height: 300px;
+        height: 350px;
         bottom: 0;
         padding-top: 20px;
 
