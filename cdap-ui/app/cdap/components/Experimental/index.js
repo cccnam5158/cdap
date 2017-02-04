@@ -161,7 +161,7 @@ export default class Experimental extends Component {
     let workspaceId = this.workspaceId.value;
     if (!workspaceId) {
       this.setState({
-        errorMessage: 'Please fill out workspace id',
+        errorMessage: 'Please specify the workspace you want to use.',
         showAlert: true
       });
       return;
@@ -169,7 +169,8 @@ export default class Experimental extends Component {
 
     let requestObj = {
       namespace: 'default',
-      workspaceId
+      workspaceId,
+      limit: 100
     };
 
     let directives = this.textareaRef.value;
